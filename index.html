@@ -3,75 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f4f0ea">
+<meta name="theme-color" content="#ece4d6">
 <title>La Taberna · Carta de vinos</title>
 <style>
 :root{
-  --bg:#f4f0ea;
-  --paper:#fbf8f3;
-  --ink:#181512;
-  --muted:#766f68;
-  --line:#d8d4cf;
-  --line2:#e8e3dc;
-  --accent:#b6262d;
-  --accent-dark:#861c22;
-  --shadow:0 16px 40px rgba(48,38,28,.08);
+  --paper:#ece4d6;
+  --paper-2:#f5efe5;
+  --paper-3:#e5dac7;
+  --ink:#171412;
+  --muted:#5c554f;
+  --line:#c8bcab;
+  --line-2:#d8cebf;
+  --accent:#7e1f24;
+  --accent-dark:#5d171b;
+  --shadow:0 14px 28px rgba(40,31,23,.06);
 }
+
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   margin:0;
-  background:var(--bg);
   color:var(--ink);
-  font-family:Arial, Helvetica, sans-serif;
+  font-family:"Courier New", Courier, monospace;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,255,255,.42), transparent 24rem),
+    repeating-linear-gradient(
+      0deg,
+      rgba(80,66,51,.03) 0,
+      rgba(80,66,51,.03) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    linear-gradient(180deg, #efe7da 0%, var(--paper) 100%);
 }
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.11;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(0,0,0,.06), transparent 18rem),
+    radial-gradient(circle at 80% 20%, rgba(0,0,0,.04), transparent 12rem),
+    repeating-linear-gradient(
+      90deg,
+      rgba(90,76,60,.03) 0,
+      rgba(90,76,60,.03) 2px,
+      transparent 2px,
+      transparent 14px
+    );
+  mix-blend-mode:multiply;
+}
+
 button{font:inherit}
 .app{
-  width:min(100%,980px);
+  width:min(100%, 980px);
   margin:auto;
-  padding:18px 14px 44px;
+  padding:18px 14px 42px;
 }
 
-/* Cabecera mínima */
+/* MASTHEAD */
 .header{
-  padding:8px 4px 18px;
   text-align:center;
+  padding:8px 0 24px;
+}
+.masthead{
+  border-top:2px solid var(--ink);
+  border-bottom:2px solid var(--ink);
+  padding:14px 10px 12px;
+  background:rgba(255,255,255,.22);
 }
 .brand{
-  font-family:"Courier New", Courier, monospace;
-  font-weight:700;
-  letter-spacing:.14em;
-  font-size:12px;
+  font-size:11px;
+  letter-spacing:.22em;
   text-transform:uppercase;
-  color:#5f574f;
+  color:var(--muted);
+  margin-bottom:8px;
 }
 .header h1{
-  margin:9px 0 0;
-  font-family:"Courier New", Courier, monospace;
-  font-size:clamp(30px,7vw,48px);
-  line-height:1;
+  margin:0;
+  font-size:clamp(34px, 8vw, 56px);
+  line-height:.94;
   letter-spacing:-.05em;
+  text-transform:uppercase;
 }
-.header p{
+.subhead{
   margin:10px auto 0;
+  max-width:720px;
   color:var(--muted);
-  font-size:14px;
-  line-height:1.5;
+  font-size:13px;
+  line-height:1.6;
+}
+.edition{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  padding:9px 2px 0;
+  font-size:11px;
+  text-transform:uppercase;
+  color:#49433d;
 }
 
-/* Carrusel */
+/* CAROUSEL PANEL */
 .carousel-shell{
-  position:relative;
+  margin-bottom:18px;
 }
+.carousel-panel{
+  background:linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,.12));
+  border:1px solid var(--line);
+  border-radius:8px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.carousel-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:16px 16px 12px;
+  border-bottom:1px solid var(--line-2);
+  background:rgba(255,255,255,.18);
+}
+.section-label{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+.carousel-top h2{
+  margin:0;
+  font-size:19px;
+  line-height:1.1;
+  text-transform:uppercase;
+}
+.carousel-top p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+.arrow-group{
+  display:flex;
+  gap:8px;
+}
+.arrow{
+  width:42px;height:42px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:var(--paper-2);
+  color:var(--ink);
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(45,34,25,.05);
+}
+
 .carousel{
   display:grid;
   grid-auto-flow:column;
-  grid-auto-columns:min(74vw,240px);
+  grid-auto-columns:min(74vw, 240px);
   gap:12px;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
   scroll-padding-inline:calc((100% - min(74vw,240px))/2);
-  padding:10px calc((100% - min(74vw,240px))/2) 22px;
+  padding:16px calc((100% - min(74vw,240px))/2) 18px;
   scrollbar-width:none;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior-inline:contain;
@@ -80,128 +175,168 @@ button{font:inherit}
 
 .wine-card{
   scroll-snap-align:center;
-  border:1px solid var(--line2);
-  border-radius:20px;
-  background:rgba(255,255,255,.48);
-  min-height:316px;
+  border:1px solid var(--line-2);
+  border-radius:6px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.48)),
+    var(--paper-2);
+  min-height:318px;
   padding:16px 14px;
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:space-between;
+  align-items:center;
+  transition:transform .22s ease, box-shadow .22s ease, opacity .22s ease, border-color .22s ease;
   cursor:pointer;
-  transition:.2s ease;
   -webkit-tap-highlight-color:transparent;
+  position:relative;
+}
+.wine-card:before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px dashed rgba(72,60,48,.10);
+  pointer-events:none;
 }
 .wine-card.selected{
-  background:#fff;
-  border-color:#cfc7be;
+  background:#fffdfa;
+  border-color:#b8a691;
   transform:translateY(-4px);
-  box-shadow:var(--shadow);
+  box-shadow:0 18px 32px rgba(50,36,24,.10);
 }
 .wine-card:not(.selected){
   opacity:.58;
-  transform:scale(.96);
+  transform:scale(.965);
 }
 
 .bottle{
   position:relative;
-  width:76px;
+  width:78px;
   height:184px;
-  margin-top:4px;
-  filter:drop-shadow(0 16px 16px rgba(40,27,19,.16));
+  margin-top:2px;
+  filter:drop-shadow(0 15px 16px rgba(42,28,18,.12));
 }
 .bottle .body{
   position:absolute;
-  bottom:0;
-  left:0;
-  width:76px;
-  height:141px;
-  border-radius:16px 16px 9px 9px;
+  bottom:0;left:0;
+  width:78px;height:142px;
+  border-radius:16px 16px 10px 10px;
   overflow:hidden;
 }
 .bottle .neck{
   position:absolute;
-  bottom:134px;
-  left:25px;
-  width:26px;
-  height:55px;
+  bottom:136px;left:25px;
+  width:27px;height:55px;
   border-radius:7px 7px 2px 2px;
 }
 .bottle .cap{
   position:absolute;
-  bottom:181px;
-  left:27px;
-  width:22px;
-  height:8px;
+  bottom:182px;left:27px;
+  width:22px;height:8px;
   border-radius:3px 3px 0 0;
-  background:#b49c7c;
+  background:#a89576;
 }
-.red .body,.red .neck{background:linear-gradient(90deg,#191514,#4a131b 50%,#191514)}
-.white .body,.white .neck{background:linear-gradient(90deg,#5d5628,#b89242 50%,#6b5b28)}
-.olive .body,.olive .neck{background:linear-gradient(90deg,#303126,#5e6241 50%,#292b22)}
+.red .body,.red .neck{background:linear-gradient(90deg,#1d1816,#4d1820 50%,#211a18)}
+.white .body,.white .neck{background:linear-gradient(90deg,#615a2b,#b88f3d 50%,#6e5e2c)}
+.olive .body,.olive .neck{background:linear-gradient(90deg,#333429,#5c6143 50%,#2b2c24)}
+
 .label{
   position:absolute;
-  left:8px;right:8px;top:46px;
-  min-height:67px;
+  left:8px;right:8px;top:47px;
+  min-height:66px;
   display:grid;
   place-items:center;
-  padding:7px;
   text-align:center;
-  background:#f1e8dc;
-  color:#2b211a;
-  border-radius:4px;
-  font:700 9px/1.18 "Courier New", Courier, monospace;
+  padding:7px;
+  background:#efe6d7;
+  color:#241c17;
+  border-radius:2px;
+  border:1px solid rgba(76,57,39,.12);
+  font-size:9px;
+  font-weight:700;
+  line-height:1.2;
   letter-spacing:.08em;
 }
 
-.card-copy{text-align:center;width:100%}
+.card-copy{
+  text-align:center;
+  width:100%;
+}
 .card-copy .type{
-  display:block;
-  margin-bottom:7px;
+  display:inline-block;
+  margin-bottom:8px;
+  padding:5px 9px;
+  background:#f0e7da;
+  border:1px solid var(--line-2);
+  color:#5e554d;
   font-size:10px;
   text-transform:uppercase;
-  letter-spacing:.12em;
-  color:#8a8178;
+  letter-spacing:.10em;
 }
 .card-copy h3{
   margin:0;
-  font-family:"Courier New", Courier, monospace;
-  font-size:19px;
-  line-height:1.05;
+  font-size:18px;
+  line-height:1.08;
+  letter-spacing:-.02em;
 }
 .card-copy p{
-  margin:7px 0 0;
+  margin:8px 0 0;
   color:var(--muted);
   font-size:12px;
-  line-height:1.4;
+  line-height:1.45;
 }
+
 .dots{
   display:flex;
   justify-content:center;
   gap:7px;
-  margin:-5px 0 22px;
+  padding:0 0 16px;
 }
 .dot{
-  width:6px;height:6px;
-  padding:0;
+  width:7px;height:7px;
   border:0;
+  padding:0;
   border-radius:50%;
-  background:#c9c3bc;
+  background:#bdb4aa;
 }
 .dot.active{
-  width:20px;
+  width:22px;
   border-radius:999px;
-  background:#655e57;
+  background:#4f4740;
 }
 
-/* Ficha */
+/* DETAILS */
 .details{
-  background:var(--paper);
-  border:1px solid var(--line2);
-  border-radius:22px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.40), rgba(255,255,255,.18)),
+    var(--paper-2);
+  border:1px solid var(--line);
+  border-radius:8px;
+  box-shadow:var(--shadow);
   padding:22px;
-  box-shadow:0 10px 28px rgba(48,38,28,.045);
+  position:relative;
+}
+.details:before{
+  content:"";
+  position:absolute;
+  inset:10px;
+  border:1px solid rgba(85,70,56,.08);
+  pointer-events:none;
+}
+.details.flash{
+  animation:fade .22s ease;
+}
+@keyframes fade{
+  from{opacity:.6;transform:translateY(5px)}
+  to{opacity:1;transform:none}
+}
+
+.kicker{
+  margin:0 0 10px;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  color:var(--muted);
 }
 .detail-top{
   display:grid;
@@ -211,16 +346,16 @@ button{font:inherit}
 }
 .detail-top h2{
   margin:0;
-  font-family:"Courier New", Courier, monospace;
-  font-size:clamp(26px,5vw,36px);
+  font-size:clamp(26px, 5vw, 36px);
   line-height:1;
+  text-transform:uppercase;
   letter-spacing:-.04em;
 }
 .location{
-  margin-top:7px;
+  margin-top:8px;
   color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
+  font-size:14px;
+  line-height:1.55;
 }
 .price{
   text-align:right;
@@ -229,47 +364,59 @@ button{font:inherit}
   display:block;
   color:var(--muted);
   font-size:10px;
+  margin-bottom:6px;
   text-transform:uppercase;
   letter-spacing:.1em;
-  margin-bottom:4px;
 }
 .price strong{
   display:block;
-  font-size:20px;
+  font-size:22px;
   white-space:nowrap;
 }
+
 .description{
-  margin:18px 0 20px;
+  margin:18px 0 22px;
   max-width:760px;
-  color:#49443f;
+  color:#3d3530;
   font-size:14px;
-  line-height:1.7;
-}
-.meta{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-bottom:26px;
-}
-.meta span{
-  padding:8px 10px;
-  border-radius:999px;
-  background:#f0ece6;
-  color:#5e5650;
-  font-size:11px;
+  line-height:1.8;
 }
 
-/* Niveles estilo Decántalo */
+.wine-data{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin:0 0 24px;
+}
+.wine-data-item{
+  padding:12px 14px;
+  border:1px solid var(--line-2);
+  background:#fcfaf6;
+}
+.wine-data-item small{
+  display:block;
+  margin-bottom:6px;
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.wine-data-item strong{
+  display:block;
+  font-size:13px;
+  line-height:1.5;
+  font-weight:700;
+}
+
 .profile{
-  border-top:1px solid var(--line2);
+  border-top:1px solid var(--line-2);
   padding-top:22px;
 }
 .profile-title{
   margin:0 0 18px;
-  font-family:"Courier New", Courier, monospace;
   font-size:14px;
-  letter-spacing:.06em;
   text-transform:uppercase;
+  letter-spacing:.08em;
 }
 .level{
   display:grid;
@@ -278,56 +425,58 @@ button{font:inherit}
   align-items:center;
   margin:0 0 22px;
 }
-.level:last-child{margin-bottom:2px}
+.level:last-child{margin-bottom:0}
 .level-label{
   font-size:14px;
-  line-height:1.12;
+  line-height:1.15;
 }
 .level-label.right{text-align:right}
 .track{
   position:relative;
   height:8px;
-  background:var(--line);
+  background:#d6d0c8;
   border-radius:999px;
 }
 .knob{
   position:absolute;
   top:50%;
-  left:50%;
-  width:24px;
-  height:24px;
+  width:24px;height:24px;
   border-radius:50%;
   background:var(--accent);
   transform:translate(-50%,-50%);
-  box-shadow:0 2px 8px rgba(130,24,30,.16);
-}
-.knob:after{
-  content:"";
-  position:absolute;
-  inset:7px;
-  border-radius:50%;
-  background:rgba(255,255,255,.08);
-}
-.pairing{
-  margin-top:20px;
-  padding-top:18px;
-  border-top:1px solid var(--line2);
-  color:#4f4944;
-  font-size:13px;
-  line-height:1.6;
-}
-.pairing strong{
-  color:#1f1b18;
-  font-family:"Courier New", Courier, monospace;
+  box-shadow:0 4px 10px rgba(122,30,35,.16);
+  border:3px solid #fffaf3;
 }
 
-/* animación suave al cambiar la ficha */
-.details.flash{
-  animation:fade .22s ease;
+.pairing{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid var(--line-2);
+  color:#433b36;
+  font-size:14px;
+  line-height:1.7;
 }
-@keyframes fade{
-  from{opacity:.55;transform:translateY(4px)}
-  to{opacity:1;transform:none}
+.pairing strong{
+  color:var(--ink);
+  text-transform:uppercase;
+}
+
+.detail-section{
+  margin-top:22px;
+  padding-top:20px;
+  border-top:1px solid var(--line-2);
+}
+.detail-section h3{
+  margin:0 0 10px;
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.detail-section p{
+  margin:0;
+  color:#4a433e;
+  font-size:14px;
+  line-height:1.8;
 }
 
 @media(min-width:760px){
@@ -339,21 +488,24 @@ button{font:inherit}
     padding-right:calc((100% - 220px)/2);
   }
   .details{padding:28px}
-  .description{font-size:15px}
 }
 @media(max-width:520px){
-  .app{padding:12px 10px 34px}
-  .header{padding-bottom:10px}
-  .header p{font-size:13px}
+  .app{padding:12px 10px 32px}
+  .header{padding-bottom:16px}
+  .subhead{font-size:12px}
+  .carousel-top{
+    padding:14px 14px 10px;
+  }
   .carousel{
     grid-auto-columns:80vw;
     scroll-padding-inline:10vw;
     padding-left:10vw;
     padding-right:10vw;
   }
-  .wine-card{min-height:302px}
+  .wine-card{min-height:304px}
   .detail-top{grid-template-columns:1fr}
   .price{text-align:left}
+  .wine-data{grid-template-columns:1fr}
   .level{
     grid-template-columns:74px 1fr 74px;
     gap:9px;
@@ -366,17 +518,40 @@ button{font:inherit}
 <main class="app">
 
   <header class="header">
-    <div class="brand">La Taberna</div>
-    <h1>Carta de vinos</h1>
-    <p>Desliza para descubrir la selección.</p>
+    <div class="masthead">
+      <div class="brand">La Taberna · Edición de Vinos</div>
+      <h1>Carta de vinos</h1>
+      <p class="subhead">Una selección breve para leer como una pequeña carta de bodega: desliza, elige y consulta la ficha completa de cada vino.</p>
+      <div class="edition">
+        <span>Selección de la casa</span>
+        <span>10 referencias</span>
+        <span>Por copa y botella</span>
+      </div>
+    </div>
   </header>
 
   <section class="carousel-shell">
-    <div class="carousel" id="carousel" aria-label="Vinos"></div>
-    <div class="dots" id="dots"></div>
+    <div class="carousel-panel">
+      <div class="carousel-top">
+        <div>
+          <div class="section-label">Titular principal</div>
+          <h2>Selección de vinos</h2>
+          <p>Desliza con el dedo y el vino seleccionado mostrará su ficha.</p>
+        </div>
+        <div class="arrow-group">
+          <button class="arrow" id="prevBtn" aria-label="Anterior">‹</button>
+          <button class="arrow" id="nextBtn" aria-label="Siguiente">›</button>
+        </div>
+      </div>
+
+      <div class="carousel" id="carousel" aria-label="Vinos"></div>
+      <div class="dots" id="dots"></div>
+    </div>
   </section>
 
   <section class="details" id="details">
+    <p class="kicker">Ficha del vino seleccionado</p>
+
     <div class="detail-top">
       <div>
         <h2 id="detailName"></h2>
@@ -390,7 +565,32 @@ button{font:inherit}
 
     <p class="description" id="detailDescription"></p>
 
-    <div class="meta" id="detailMeta"></div>
+    <div class="wine-data">
+      <div class="wine-data-item">
+        <small>Región</small>
+        <strong id="detailRegion">—</strong>
+      </div>
+      <div class="wine-data-item">
+        <small>Denominación de Origen</small>
+        <strong id="detailDO">—</strong>
+      </div>
+      <div class="wine-data-item">
+        <small>Tipo</small>
+        <strong id="detailType">—</strong>
+      </div>
+      <div class="wine-data-item">
+        <small>Variedad de la uva</small>
+        <strong id="detailGrape">—</strong>
+      </div>
+      <div class="wine-data-item">
+        <small>Tiempo en barrica</small>
+        <strong id="detailBarrel">—</strong>
+      </div>
+      <div class="wine-data-item">
+        <small>Añada</small>
+        <strong id="detailYear">—</strong>
+      </div>
+    </div>
 
     <div class="profile">
       <h3 class="profile-title">Perfil del vino</h3>
@@ -415,6 +615,16 @@ button{font:inherit}
     </div>
 
     <div class="pairing" id="detailPairing"></div>
+
+    <div class="detail-section">
+      <h3>Notas de cata</h3>
+      <p id="detailTasting">—</p>
+    </div>
+
+    <div class="detail-section">
+      <h3>Información sobre la bodega</h3>
+      <p id="detailWineryInfo">—</p>
+    </div>
   </section>
 </main>
 
@@ -423,91 +633,121 @@ const wines = [
   {
     name:"Castiñeira Albariño", label:"CASTIÑEIRA", bottle:"white",
     type:"Blanco", grape:"Albariño", year:"2024",
-    region:"Rías Baixas · España", winery:"Lagar de Pintos",
+    region:"Galicia · Rías Baixas", denomination:"D.O. Rías Baixas",
+    winery:"Lagar de Pintos", barrel:"Sin barrica",
     glass:"3,90 €", bottlePrice:"24 €",
     description:"Fresco, limpio y muy expresivo. Notas cítricas, fruta blanca y un final salino que invita a seguir bebiendo.",
     pairing:"Marisco, pescado, conservas y tapas frías.",
+    tasting:"Color amarillo pajizo brillante. En nariz aparecen cítricos, manzana verde, flores blancas y recuerdos salinos. En boca es fresco, ligero y con un final persistente.",
+    wineryInfo:"Pequeña bodega gallega centrada en variedades atlánticas y elaboraciones frescas. Trabaja principalmente con uva Albariño procedente de viñedos próximos a la costa.",
     age:18, body:35, aroma:78
   },
   {
     name:"Patio de Cal", label:"PATIO DE CAL", bottle:"white",
     type:"Blanco", grape:"Verdejo", year:"2024",
-    region:"Rueda · España", winery:"Bodegas del Patio",
+    region:"Castilla y León · Rueda", denomination:"D.O. Rueda",
+    winery:"Bodegas del Patio", barrel:"Sin barrica",
     glass:"3,20 €", bottlePrice:"17 €",
     description:"Blanco seco y ligero, con notas de hinojo, fruta blanca y una acidez fresca.",
     pairing:"Aperitivos, ensaladas, frituras y quesos suaves.",
+    tasting:"Amarillo pálido con reflejos verdosos. Aromas de manzana, cítricos e hinojo. Boca ligera, fresca y con un toque ligeramente amargo al final.",
+    wineryInfo:"Bodega de estilo joven situada en la zona de Rueda, enfocada en blancos fáciles de beber y muy gastronómicos, con protagonismo de la variedad Verdejo.",
     age:12, body:28, aroma:56
   },
   {
     name:"Piedra Clara", label:"PIEDRA CLARA", bottle:"olive",
     type:"Blanco", grape:"Godello", year:"2023",
-    region:"Valdeorras · España", winery:"Piedra Clara",
+    region:"Galicia · Valdeorras", denomination:"D.O. Valdeorras",
+    winery:"Piedra Clara", barrel:"3 meses sobre lías",
     glass:"4,20 €", bottlePrice:"24 €",
     description:"Más amplio y mineral, con fruta de hueso y textura cremosa sin perder frescura.",
     pairing:"Pulpo, bacalao, pescado al horno y arroces.",
+    tasting:"Nariz de pera, melocotón blanco y piedra húmeda. En boca tiene más volumen, textura cremosa y una acidez que mantiene el conjunto equilibrado.",
+    wineryInfo:"Proyecto centrado en Godello y viñedos de suelos pedregosos. Busca vinos con textura y carácter mineral, respetando la expresión de la zona de Valdeorras.",
     age:42, body:62, aroma:60
   },
   {
     name:"Azahar del Sur", label:"AZAHAR", bottle:"white",
     type:"Blanco", grape:"Moscatel seco", year:"2024",
-    region:"Málaga · España", winery:"Sierras del Sur",
+    region:"Andalucía · Málaga", denomination:"D.O. Sierras de Málaga",
+    winery:"Sierras del Sur", barrel:"Sin barrica",
     glass:"3,80 €", bottlePrice:"21 €",
     description:"Muy aromático, con flor de azahar, cítricos y fruta fresca. Seco y ligero en boca.",
     pairing:"Boquerones, ensaladas y cocina especiada.",
+    tasting:"Muy expresivo en nariz, con flor de azahar, piel de naranja y uva fresca. Seco en boca, con buena acidez y un final aromático.",
+    wineryInfo:"Bodega andaluza orientada a variedades mediterráneas y vinos aromáticos. Sus blancos buscan conservar la frescura natural de la uva Moscatel.",
     age:14, body:30, aroma:90
   },
   {
     name:"Luna de Barro", label:"LUNA BARRO", bottle:"white",
     type:"Blanco", grape:"Chardonnay", year:"2023",
-    region:"Granada · España", winery:"Sierra Nevada Wines",
+    region:"Andalucía · Granada", denomination:"IGP Altiplano de Sierra Nevada",
+    winery:"Sierra Nevada Wines", barrel:"5 meses en barrica",
     glass:"4,30 €", bottlePrice:"25 €",
     description:"Chardonnay con crianza suave en madera. Pera madura, notas cremosas y tostados delicados.",
     pairing:"Croquetas, pollo, pescados salseados y platos cremosos.",
+    tasting:"Color dorado suave. Aromas de pera madura, vainilla ligera y mantequilla. En boca es amplio, cremoso y equilibrado por una buena frescura.",
+    wineryInfo:"Bodega de altura situada en Granada. Trabaja con pequeñas parcelas y crianzas moderadas para aportar complejidad sin perder frescura.",
     age:75, body:74, aroma:58
   },
   {
     name:"Casa del Barranco", label:"BARRANCO", bottle:"red",
     type:"Tinto", grape:"Tempranillo", year:"2021",
-    region:"Rioja · España", winery:"Casa del Barranco",
+    region:"La Rioja", denomination:"D.O.Ca. Rioja",
+    winery:"Casa del Barranco", barrel:"12 meses en barrica",
     glass:"3,40 €", bottlePrice:"18 €",
     description:"Fruta roja madura, vainilla y especias suaves. Un crianza redondo y fácil de beber.",
     pairing:"Embutidos, carnes a la brasa y quesos curados.",
+    tasting:"Color rubí intenso. Nariz de cereza madura, vainilla y especias dulces. En boca es redondo, con tanino suave y un final agradable.",
+    wineryInfo:"Bodega familiar de Rioja dedicada principalmente al Tempranillo. Combina elaboración tradicional con crianzas moderadas en madera.",
     age:72, body:63, aroma:52
   },
   {
     name:"Senda del Duero", label:"SENDA", bottle:"red",
     type:"Tinto", grape:"Tinta del País", year:"2023",
-    region:"Ribera del Duero · España", winery:"Viñedos del Duero",
+    region:"Castilla y León · Ribera del Duero", denomination:"D.O. Ribera del Duero",
+    winery:"Viñedos del Duero", barrel:"6 meses en barrica",
     glass:"3,70 €", bottlePrice:"20 €",
     description:"Mora, ciruela y madera sutil. Sabroso, directo y con un paso de boca amable.",
     pairing:"Brasa, guisos y jamón.",
+    tasting:"Fruta negra madura, ciruela y ligeros tostados. Boca sabrosa, con cuerpo medio, tanino amable y final de buena longitud.",
+    wineryInfo:"Proyecto de Ribera del Duero enfocado en vinos jóvenes y robles con mucha fruta, procedentes de viñedos de Tinta del País.",
     age:52, body:72, aroma:50
   },
   {
     name:"Monte de Pizarra", label:"PIZARRA", bottle:"olive",
     type:"Tinto", grape:"Mencía", year:"2022",
-    region:"Bierzo · España", winery:"Pizarra del Bierzo",
+    region:"Castilla y León · Bierzo", denomination:"D.O. Bierzo",
+    winery:"Pizarra del Bierzo", barrel:"4 meses en barrica",
     glass:"3,90 €", bottlePrice:"22 €",
     description:"Fresco y floral, con cereza, violeta y un toque mineral. Ligero pero con personalidad.",
     pairing:"Setas, pollo asado, chacinas suaves y arroces.",
+    tasting:"Cereza fresca, violetas y recuerdos minerales. En boca resulta ágil, fresco y de tanino fino, con un final ligeramente terroso.",
+    wineryInfo:"Bodega berciana que trabaja Mencía de parcelas sobre suelos de pizarra. Sus vinos buscan frescura, expresión floral y carácter mineral.",
     age:34, body:44, aroma:68
   },
   {
     name:"Loma Vieja", label:"LOMA VIEJA", bottle:"red",
     type:"Tinto", grape:"Garnacha", year:"2022",
-    region:"Campo de Borja · España", winery:"Altos de Borja",
+    region:"Aragón · Campo de Borja", denomination:"D.O. Campo de Borja",
+    winery:"Altos de Borja", barrel:"5 meses en barrica",
     glass:"3,60 €", bottlePrice:"19 €",
     description:"Garnacha mediterránea, con frambuesa, hierbas secas y un final cálido y amable.",
     pairing:"Ibéricos, cordero y verduras asadas.",
+    tasting:"Frambuesa, fresa madura, hierbas mediterráneas y un ligero fondo especiado. Boca cálida, redonda y muy sabrosa.",
+    wineryInfo:"Bodega aragonesa especializada en Garnacha, con viñedos en zonas secas y de altura. Busca vinos expresivos, maduros y fáciles de disfrutar.",
     age:46, body:58, aroma:64
   },
   {
     name:"Encina Alta", label:"ENCINA ALTA", bottle:"red",
     type:"Tinto", grape:"Syrah", year:"2021",
-    region:"Granada · España", winery:"Encina Alta",
+    region:"Andalucía · Granada", denomination:"IGP Altiplano de Sierra Nevada",
+    winery:"Encina Alta", barrel:"10 meses en barrica",
     glass:"4,10 €", bottlePrice:"23 €",
     description:"Fruta negra, pimienta y textura aterciopelada. El más intenso y estructurado de la selección.",
     pairing:"Carnes rojas, estofados y quesos curados.",
+    tasting:"Fruta negra madura, pimienta, cacao y notas balsámicas. En boca es potente, estructurado y de textura aterciopelada.",
+    wineryInfo:"Bodega granadina de pequeña producción, enfocada en vinos tintos de altura y crianzas cuidadas para conservar frescura y concentración.",
     age:68, body:86, aroma:66
   }
 ];
@@ -560,11 +800,14 @@ function renderDetail(){
   document.getElementById("detailLocation").textContent = `${w.winery} · ${w.region}`;
   document.getElementById("detailPrice").textContent = `${w.glass} · ${w.bottlePrice}`;
   document.getElementById("detailDescription").textContent = w.description;
-  document.getElementById("detailMeta").innerHTML = `
-    <span>${w.type}</span>
-    <span>${w.grape}</span>
-    <span>${w.year}</span>
-  `;
+  document.getElementById("detailRegion").textContent = w.region;
+  document.getElementById("detailDO").textContent = w.denomination;
+  document.getElementById("detailType").textContent = w.type;
+  document.getElementById("detailGrape").textContent = w.grape;
+  document.getElementById("detailBarrel").textContent = w.barrel;
+  document.getElementById("detailYear").textContent = w.year;
+  document.getElementById("detailTasting").textContent = w.tasting;
+  document.getElementById("detailWineryInfo").textContent = w.wineryInfo;
   document.getElementById("ageKnob").style.left = `${w.age}%`;
   document.getElementById("bodyKnob").style.left = `${w.body}%`;
   document.getElementById("aromaKnob").style.left = `${w.aroma}%`;
@@ -619,6 +862,14 @@ carousel.addEventListener("scroll",()=>{
   clearTimeout(scrollTimer);
   scrollTimer = setTimeout(detectCentered, 80);
 },{passive:true});
+
+document.getElementById("prevBtn").addEventListener("click",()=>{
+  selectWine(Math.max(0, selected-1), true);
+});
+
+document.getElementById("nextBtn").addEventListener("click",()=>{
+  selectWine(Math.min(wines.length-1, selected+1), true);
+});
 
 renderCards();
 renderDetail();
