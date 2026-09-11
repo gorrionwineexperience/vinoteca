@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f0ea">
+<title>La Taberna · Carta de vinos</title>
+<style>
+:root{
+  --bg:#f4f0ea;
+  --paper:#fbf8f3;
+  --ink:#181512;
+  --muted:#766f68;
+  --line:#d8d4cf;
+  --line2:#e8e3dc;
+  --accent:#b6262d;
+  --accent-dark:#861c22;
+  --shadow:0 16px 40px rgba(48,38,28,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Arial, Helvetica, sans-serif;
+}
+button{font:inherit}
+.app{
+  width:min(100%,980px);
+  margin:auto;
+  padding:18px 14px 44px;
+}
+
+/* Cabecera mínima */
+.header{
+  padding:8px 4px 18px;
+  text-align:center;
+}
+.brand{
+  font-family:"Courier New", Courier, monospace;
+  font-weight:700;
+  letter-spacing:.14em;
+  font-size:12px;
+  text-transform:uppercase;
+  color:#5f574f;
+}
+.header h1{
+  margin:9px 0 0;
+  font-family:"Courier New", Courier, monospace;
+  font-size:clamp(30px,7vw,48px);
+  line-height:1;
+  letter-spacing:-.05em;
+}
+.header p{
+  margin:10px auto 0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* Carrusel */
+.carousel-shell{
+  position:relative;
+}
+.carousel{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:min(74vw,240px);
+  gap:12px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-padding-inline:calc((100% - min(74vw,240px))/2);
+  padding:10px calc((100% - min(74vw,240px))/2) 22px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-inline:contain;
+}
+.carousel::-webkit-scrollbar{display:none}
+
+.wine-card{
+  scroll-snap-align:center;
+  border:1px solid var(--line2);
+  border-radius:20px;
+  background:rgba(255,255,255,.48);
+  min-height:316px;
+  padding:16px 14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  transition:.2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.wine-card.selected{
+  background:#fff;
+  border-color:#cfc7be;
+  transform:translateY(-4px);
+  box-shadow:var(--shadow);
+}
+.wine-card:not(.selected){
+  opacity:.58;
+  transform:scale(.96);
+}
+
+.bottle{
+  position:relative;
+  width:76px;
+  height:184px;
+  margin-top:4px;
+  filter:drop-shadow(0 16px 16px rgba(40,27,19,.16));
+}
+.bottle .body{
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:76px;
+  height:141px;
+  border-radius:16px 16px 9px 9px;
+  overflow:hidden;
+}
+.bottle .neck{
+  position:absolute;
+  bottom:134px;
+  left:25px;
+  width:26px;
+  height:55px;
+  border-radius:7px 7px 2px 2px;
+}
+.bottle .cap{
+  position:absolute;
+  bottom:181px;
+  left:27px;
+  width:22px;
+  height:8px;
+  border-radius:3px 3px 0 0;
+  background:#b49c7c;
+}
+.red .body,.red .neck{background:linear-gradient(90deg,#191514,#4a131b 50%,#191514)}
+.white .body,.white .neck{background:linear-gradient(90deg,#5d5628,#b89242 50%,#6b5b28)}
+.olive .body,.olive .neck{background:linear-gradient(90deg,#303126,#5e6241 50%,#292b22)}
+.label{
+  position:absolute;
+  left:8px;right:8px;top:46px;
+  min-height:67px;
+  display:grid;
+  place-items:center;
+  padding:7px;
+  text-align:center;
+  background:#f1e8dc;
+  color:#2b211a;
+  border-radius:4px;
+  font:700 9px/1.18 "Courier New", Courier, monospace;
+  letter-spacing:.08em;
+}
+
+.card-copy{text-align:center;width:100%}
+.card-copy .type{
+  display:block;
+  margin-bottom:7px;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:#8a8178;
+}
+.card-copy h3{
+  margin:0;
+  font-family:"Courier New", Courier, monospace;
+  font-size:19px;
+  line-height:1.05;
+}
+.card-copy p{
+  margin:7px 0 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.4;
+}
+.dots{
+  display:flex;
+  justify-content:center;
+  gap:7px;
+  margin:-5px 0 22px;
+}
+.dot{
+  width:6px;height:6px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:#c9c3bc;
+}
+.dot.active{
+  width:20px;
+  border-radius:999px;
+  background:#655e57;
+}
+
+/* Ficha */
+.details{
+  background:var(--paper);
+  border:1px solid var(--line2);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:0 10px 28px rgba(48,38,28,.045);
+}
+.detail-top{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:18px;
+  align-items:start;
+}
+.detail-top h2{
+  margin:0;
+  font-family:"Courier New", Courier, monospace;
+  font-size:clamp(26px,5vw,36px);
+  line-height:1;
+  letter-spacing:-.04em;
+}
+.location{
+  margin-top:7px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+.price{
+  text-align:right;
+}
+.price small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  margin-bottom:4px;
+}
+.price strong{
+  display:block;
+  font-size:20px;
+  white-space:nowrap;
+}
+.description{
+  margin:18px 0 20px;
+  max-width:760px;
+  color:#49443f;
+  font-size:14px;
+  line-height:1.7;
+}
+.meta{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:26px;
+}
+.meta span{
+  padding:8px 10px;
+  border-radius:999px;
+  background:#f0ece6;
+  color:#5e5650;
+  font-size:11px;
+}
+
+/* Niveles estilo Decántalo */
+.profile{
+  border-top:1px solid var(--line2);
+  padding-top:22px;
+}
+.profile-title{
+  margin:0 0 18px;
+  font-family:"Courier New", Courier, monospace;
+  font-size:14px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.level{
+  display:grid;
+  grid-template-columns:86px 1fr 86px;
+  gap:14px;
+  align-items:center;
+  margin:0 0 22px;
+}
+.level:last-child{margin-bottom:2px}
+.level-label{
+  font-size:14px;
+  line-height:1.12;
+}
+.level-label.right{text-align:right}
+.track{
+  position:relative;
+  height:8px;
+  background:var(--line);
+  border-radius:999px;
+}
+.knob{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:var(--accent);
+  transform:translate(-50%,-50%);
+  box-shadow:0 2px 8px rgba(130,24,30,.16);
+}
+.knob:after{
+  content:"";
+  position:absolute;
+  inset:7px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+}
+.pairing{
+  margin-top:20px;
+  padding-top:18px;
+  border-top:1px solid var(--line2);
+  color:#4f4944;
+  font-size:13px;
+  line-height:1.6;
+}
+.pairing strong{
+  color:#1f1b18;
+  font-family:"Courier New", Courier, monospace;
+}
+
+/* animación suave al cambiar la ficha */
+.details.flash{
+  animation:fade .22s ease;
+}
+@keyframes fade{
+  from{opacity:.55;transform:translateY(4px)}
+  to{opacity:1;transform:none}
+}
+
+@media(min-width:760px){
+  .app{padding:24px 22px 54px}
+  .carousel{
+    grid-auto-columns:220px;
+    scroll-padding-inline:calc((100% - 220px)/2);
+    padding-left:calc((100% - 220px)/2);
+    padding-right:calc((100% - 220px)/2);
+  }
+  .details{padding:28px}
+  .description{font-size:15px}
+}
+@media(max-width:520px){
+  .app{padding:12px 10px 34px}
+  .header{padding-bottom:10px}
+  .header p{font-size:13px}
+  .carousel{
+    grid-auto-columns:80vw;
+    scroll-padding-inline:10vw;
+    padding-left:10vw;
+    padding-right:10vw;
+  }
+  .wine-card{min-height:302px}
+  .detail-top{grid-template-columns:1fr}
+  .price{text-align:left}
+  .level{
+    grid-template-columns:74px 1fr 74px;
+    gap:9px;
+  }
+  .level-label{font-size:13px}
+}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <header class="header">
+    <div class="brand">La Taberna</div>
+    <h1>Carta de vinos</h1>
+    <p>Desliza para descubrir la selección.</p>
+  </header>
+
+  <section class="carousel-shell">
+    <div class="carousel" id="carousel" aria-label="Vinos"></div>
+    <div class="dots" id="dots"></div>
+  </section>
+
+  <section class="details" id="details">
+    <div class="detail-top">
+      <div>
+        <h2 id="detailName"></h2>
+        <div class="location" id="detailLocation"></div>
+      </div>
+      <div class="price">
+        <small>Copa · botella</small>
+        <strong id="detailPrice"></strong>
+      </div>
+    </div>
+
+    <p class="description" id="detailDescription"></p>
+
+    <div class="meta" id="detailMeta"></div>
+
+    <div class="profile">
+      <h3 class="profile-title">Perfil del vino</h3>
+
+      <div class="level">
+        <div class="level-label">Joven</div>
+        <div class="track"><span class="knob" id="ageKnob"></span></div>
+        <div class="level-label right">Barrica</div>
+      </div>
+
+      <div class="level">
+        <div class="level-label">Ligero</div>
+        <div class="track"><span class="knob" id="bodyKnob"></span></div>
+        <div class="level-label right">Cuerpo</div>
+      </div>
+
+      <div class="level">
+        <div class="level-label">Poco<br>aromático</div>
+        <div class="track"><span class="knob" id="aromaKnob"></span></div>
+        <div class="level-label right">Muy<br>aromático</div>
+      </div>
+    </div>
+
+    <div class="pairing" id="detailPairing"></div>
+  </section>
+</main>
+
+<script>
+const wines = [
+  {
+    name:"Castiñeira Albariño", label:"CASTIÑEIRA", bottle:"white",
+    type:"Blanco", grape:"Albariño", year:"2024",
+    region:"Rías Baixas · España", winery:"Lagar de Pintos",
+    glass:"3,90 €", bottlePrice:"24 €",
+    description:"Fresco, limpio y muy expresivo. Notas cítricas, fruta blanca y un final salino que invita a seguir bebiendo.",
+    pairing:"Marisco, pescado, conservas y tapas frías.",
+    age:18, body:35, aroma:78
+  },
+  {
+    name:"Patio de Cal", label:"PATIO DE CAL", bottle:"white",
+    type:"Blanco", grape:"Verdejo", year:"2024",
+    region:"Rueda · España", winery:"Bodegas del Patio",
+    glass:"3,20 €", bottlePrice:"17 €",
+    description:"Blanco seco y ligero, con notas de hinojo, fruta blanca y una acidez fresca.",
+    pairing:"Aperitivos, ensaladas, frituras y quesos suaves.",
+    age:12, body:28, aroma:56
+  },
+  {
+    name:"Piedra Clara", label:"PIEDRA CLARA", bottle:"olive",
+    type:"Blanco", grape:"Godello", year:"2023",
+    region:"Valdeorras · España", winery:"Piedra Clara",
+    glass:"4,20 €", bottlePrice:"24 €",
+    description:"Más amplio y mineral, con fruta de hueso y textura cremosa sin perder frescura.",
+    pairing:"Pulpo, bacalao, pescado al horno y arroces.",
+    age:42, body:62, aroma:60
+  },
+  {
+    name:"Azahar del Sur", label:"AZAHAR", bottle:"white",
+    type:"Blanco", grape:"Moscatel seco", year:"2024",
+    region:"Málaga · España", winery:"Sierras del Sur",
+    glass:"3,80 €", bottlePrice:"21 €",
+    description:"Muy aromático, con flor de azahar, cítricos y fruta fresca. Seco y ligero en boca.",
+    pairing:"Boquerones, ensaladas y cocina especiada.",
+    age:14, body:30, aroma:90
+  },
+  {
+    name:"Luna de Barro", label:"LUNA BARRO", bottle:"white",
+    type:"Blanco", grape:"Chardonnay", year:"2023",
+    region:"Granada · España", winery:"Sierra Nevada Wines",
+    glass:"4,30 €", bottlePrice:"25 €",
+    description:"Chardonnay con crianza suave en madera. Pera madura, notas cremosas y tostados delicados.",
+    pairing:"Croquetas, pollo, pescados salseados y platos cremosos.",
+    age:75, body:74, aroma:58
+  },
+  {
+    name:"Casa del Barranco", label:"BARRANCO", bottle:"red",
+    type:"Tinto", grape:"Tempranillo", year:"2021",
+    region:"Rioja · España", winery:"Casa del Barranco",
+    glass:"3,40 €", bottlePrice:"18 €",
+    description:"Fruta roja madura, vainilla y especias suaves. Un crianza redondo y fácil de beber.",
+    pairing:"Embutidos, carnes a la brasa y quesos curados.",
+    age:72, body:63, aroma:52
+  },
+  {
+    name:"Senda del Duero", label:"SENDA", bottle:"red",
+    type:"Tinto", grape:"Tinta del País", year:"2023",
+    region:"Ribera del Duero · España", winery:"Viñedos del Duero",
+    glass:"3,70 €", bottlePrice:"20 €",
+    description:"Mora, ciruela y madera sutil. Sabroso, directo y con un paso de boca amable.",
+    pairing:"Brasa, guisos y jamón.",
+    age:52, body:72, aroma:50
+  },
+  {
+    name:"Monte de Pizarra", label:"PIZARRA", bottle:"olive",
+    type:"Tinto", grape:"Mencía", year:"2022",
+    region:"Bierzo · España", winery:"Pizarra del Bierzo",
+    glass:"3,90 €", bottlePrice:"22 €",
+    description:"Fresco y floral, con cereza, violeta y un toque mineral. Ligero pero con personalidad.",
+    pairing:"Setas, pollo asado, chacinas suaves y arroces.",
+    age:34, body:44, aroma:68
+  },
+  {
+    name:"Loma Vieja", label:"LOMA VIEJA", bottle:"red",
+    type:"Tinto", grape:"Garnacha", year:"2022",
+    region:"Campo de Borja · España", winery:"Altos de Borja",
+    glass:"3,60 €", bottlePrice:"19 €",
+    description:"Garnacha mediterránea, con frambuesa, hierbas secas y un final cálido y amable.",
+    pairing:"Ibéricos, cordero y verduras asadas.",
+    age:46, body:58, aroma:64
+  },
+  {
+    name:"Encina Alta", label:"ENCINA ALTA", bottle:"red",
+    type:"Tinto", grape:"Syrah", year:"2021",
+    region:"Granada · España", winery:"Encina Alta",
+    glass:"4,10 €", bottlePrice:"23 €",
+    description:"Fruta negra, pimienta y textura aterciopelada. El más intenso y estructurado de la selección.",
+    pairing:"Carnes rojas, estofados y quesos curados.",
+    age:68, body:86, aroma:66
+  }
+];
+
+const carousel = document.getElementById("carousel");
+const dots = document.getElementById("dots");
+const details = document.getElementById("details");
+let selected = 0;
+let scrollTimer = null;
+
+function bottleHTML(w){
+  return `
+    <div class="bottle ${w.bottle}">
+      <div class="cap"></div>
+      <div class="neck"></div>
+      <div class="body"><div class="label">${w.label}</div></div>
+    </div>`;
+}
+
+function renderCards(){
+  carousel.innerHTML = wines.map((w,i)=>`
+    <article class="wine-card ${i===selected?'selected':''}" data-index="${i}">
+      ${bottleHTML(w)}
+      <div class="card-copy">
+        <span class="type">${w.type}</span>
+        <h3>${w.name}</h3>
+        <p>${w.grape} · ${w.year}<br>${w.bottlePrice}</p>
+      </div>
+    </article>
+  `).join("");
+
+  dots.innerHTML = wines.map((_,i)=>`<button class="dot ${i===selected?'active':''}" data-dot="${i}" aria-label="Vino ${i+1}"></button>`).join("");
+
+  carousel.querySelectorAll(".wine-card").forEach(card=>{
+    card.addEventListener("click",()=>{
+      selectWine(Number(card.dataset.index), true);
+    });
+  });
+
+  dots.querySelectorAll(".dot").forEach(dot=>{
+    dot.addEventListener("click",()=>{
+      selectWine(Number(dot.dataset.dot), true);
+    });
+  });
+}
+
+function renderDetail(){
+  const w = wines[selected];
+  document.getElementById("detailName").textContent = w.name;
+  document.getElementById("detailLocation").textContent = `${w.winery} · ${w.region}`;
+  document.getElementById("detailPrice").textContent = `${w.glass} · ${w.bottlePrice}`;
+  document.getElementById("detailDescription").textContent = w.description;
+  document.getElementById("detailMeta").innerHTML = `
+    <span>${w.type}</span>
+    <span>${w.grape}</span>
+    <span>${w.year}</span>
+  `;
+  document.getElementById("ageKnob").style.left = `${w.age}%`;
+  document.getElementById("bodyKnob").style.left = `${w.body}%`;
+  document.getElementById("aromaKnob").style.left = `${w.aroma}%`;
+  document.getElementById("detailPairing").innerHTML = `<strong>Maridaje:</strong> ${w.pairing}`;
+
+  details.classList.remove("flash");
+  void details.offsetWidth;
+  details.classList.add("flash");
+}
+
+function selectWine(index, scrollIntoView=false){
+  selected = Math.max(0, Math.min(index, wines.length-1));
+  renderCards();
+  renderDetail();
+
+  if(scrollIntoView){
+    const card = carousel.querySelector(`[data-index="${selected}"]`);
+    if(card) card.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+  }
+}
+
+function detectCentered(){
+  const rect = carousel.getBoundingClientRect();
+  const center = rect.left + rect.width/2;
+  let bestIndex = selected;
+  let bestDistance = Infinity;
+
+  carousel.querySelectorAll(".wine-card").forEach(card=>{
+    const r = card.getBoundingClientRect();
+    const cardCenter = r.left + r.width/2;
+    const distance = Math.abs(center-cardCenter);
+    if(distance < bestDistance){
+      bestDistance = distance;
+      bestIndex = Number(card.dataset.index);
+    }
+  });
+
+  if(bestIndex !== selected){
+    selected = bestIndex;
+    renderDetail();
+
+    carousel.querySelectorAll(".wine-card").forEach(card=>{
+      card.classList.toggle("selected", Number(card.dataset.index)===selected);
+    });
+    dots.querySelectorAll(".dot").forEach((dot,i)=>{
+      dot.classList.toggle("active", i===selected);
+    });
+  }
+}
+
+carousel.addEventListener("scroll",()=>{
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(detectCentered, 80);
+},{passive:true});
+
+renderCards();
+renderDetail();
+
+window.addEventListener("load",()=>{
+  const first = carousel.querySelector('[data-index="0"]');
+  if(first) first.scrollIntoView({inline:"center", block:"nearest"});
+});
+</script>
+</body>
+</html>
