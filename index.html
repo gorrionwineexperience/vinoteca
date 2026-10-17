@@ -626,6 +626,37 @@ h1{
   width:auto;
 }
 
+
+/* BOTÓN VOLVER A LA SELECCIÓN */
+.detail-image{
+  flex-direction:column;
+  gap:18px;
+}
+.select-another-btn{
+  width:100%;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.54);
+  color:var(--ink);
+  padding:12px 14px;
+  cursor:pointer;
+  text-transform:uppercase;
+  font-family:"Special Elite","American Typewriter","Courier New",monospace;
+  font-size:12px;
+  letter-spacing:.06em;
+  border-radius:0;
+  transition:background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+}
+.select-another-btn:hover,
+.select-another-btn:focus-visible{
+  background:var(--ink);
+  color:#fff;
+  border-color:var(--ink);
+  outline:none;
+}
+.select-another-btn:active{
+  transform:translateY(1px);
+}
+
 </style>
 </head>
 <body>
@@ -734,6 +765,7 @@ h1{
 
       <aside class="detail-image">
         <img id="detailBottle" src="" alt="Botella del vino seleccionado" decoding="async" />
+        <button type="button" class="select-another-btn" id="selectAnotherWine">Seleccionar otro vino</button>
       </aside>
     </div>
   </section>
@@ -1583,6 +1615,14 @@ window.addEventListener("load", () => {
   const first = carousel.querySelector('[data-index="0"]');
   if (first) first.scrollIntoView({ inline:"center", block:"nearest" });
 });
+
+document.getElementById("selectAnotherWine")?.addEventListener("click", () => {
+  document.querySelector(".carousel-panel")?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
 </script>
 </body>
 </html>
