@@ -153,14 +153,6 @@ h1{
   line-height:1.6;
   color:var(--muted);
 }
-.arrow-group{display:flex; gap:8px;}
-.arrow{
-  width:40px; height:40px;
-  border:1px solid var(--line);
-  background:#fffdf9;
-  cursor:pointer;
-  font-size:20px;
-}
 .carousel{
   display:grid;
   grid-auto-flow:column;
@@ -173,6 +165,10 @@ h1{
   padding:12px 20px 18px;
 }
 .carousel::-webkit-scrollbar{display:none;}
+.carousel{
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 5%, #000 95%, transparent 100%);
+  mask-image:linear-gradient(to right, transparent 0, #000 5%, #000 95%, transparent 100%);
+}
 
 .wine-card{
   scroll-snap-align:center;
@@ -183,12 +179,25 @@ h1{
   display:flex;
   flex-direction:column;
   cursor:pointer;
-  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  transition:transform .28s ease, box-shadow .28s ease, border-color .28s ease, opacity .28s ease, filter .28s ease;
+  opacity:.34;
+  filter:blur(1px) saturate(.74);
+  transform:scale(.91);
 }
-.wine-card:hover{transform:translateY(-2px)}
-.wine-card.selected{
-  border-color:rgba(139,32,39,.34);
-  box-shadow:0 12px 22px rgba(66,45,34,.08);
+.wine-card:hover{transform:scale(.93) translateY(-2px)}
+.wine-card.nearby{
+  opacity:.64;
+  filter:blur(.55px) saturate(.88);
+  transform:scale(.95);
+}
+.wine-card.selected,
+.wine-card.selected:hover{
+  opacity:1;
+  filter:none;
+  transform:scale(1.025);
+  border-color:rgba(139,32,39,.42);
+  box-shadow:0 18px 34px rgba(66,45,34,.14);
+  z-index:2;
 }
 .card-topline{
   display:flex;
@@ -622,14 +631,12 @@ h1{
 <body>
 <main class="app">
   <header class="masthead">
-    <div class="eyebrow">La Taberna · Carta de vinos</div>
-    <h1>Selección de vinos</h1>
-    <p class="lead">Carta interactiva con una estética más minimalista, editorial y de máquina de escribir. Desliza para descubrir la selección y toca una botella para ver la ficha completa.</p>
+    <div class="eyebrow">Carta de vinos</div>
+    <h1>TABERNA EN NIDO</h1>
+    <p class="lead">Si la vida pasa volando, que nos pille con vino.</p>
     <div class="edition">
-      <span>15 referencias</span>
-      <span>Precios por botella</span>
-      <span>Blancos y tintos</span>
-      <span>Fichas completas</span>
+      <span>27 referencias</span>
+      <span>Precios por copeo / botella</span>
     </div>
   </header>
 
@@ -639,7 +646,7 @@ h1{
       <button class="filter-btn" data-filter="Blanco">Blancos</button>
       <button class="filter-btn" data-filter="Tinto">Tintos</button>
     </div>
-    <div class="toolbar-note">La añada aparece solo dentro de la ficha de cada vino.</div>
+    <div class="toolbar-note">Gorrión Wine Experience</div>
   </section>
 
   <section class="carousel-panel">
@@ -648,10 +655,6 @@ h1{
         <div class="section-label">Selección principal</div>
         <h2>Vinos de la casa</h2>
         <p>Desliza con el dedo en móvil o tablet. El vino seleccionado muestra su ficha completa debajo.</p>
-      </div>
-      <div class="arrow-group">
-        <button class="arrow" id="prevBtn" aria-label="Anterior">‹</button>
-        <button class="arrow" id="nextBtn" aria-label="Siguiente">›</button>
       </div>
     </div>
 
@@ -721,7 +724,12 @@ h1{
           <p id="detailWineryInfo">—</p>
         </div>
 
-        <div class="footer-note">Carta preparada para GitHub Pages · precios finales de carta · imágenes de botella integradas en el papel.</div>
+        <div class="detail-section">
+          <h3>Descripción</h3>
+          <p id="detailLongDescription">—</p>
+        </div>
+
+        <center><div class="footer-note">Si vas a volar, que sea de copa en copa.</div></center>
       </div>
 
       <aside class="detail-image">
@@ -749,13 +757,14 @@ const wines = [
     "pairing": "Pescado blanco, pasta, carnes blancas, verduras y platos especiados.",
     "tasting": "Perfil de fruta blanca, cítricos y notas tropicales. En boca es fresco, equilibrado y fácil de beber.",
     "wineryInfo": "Bodegas Luzón es una de las casas históricas de Jumilla y trabaja una gama amplia de vinos de perfil mediterráneo y vocación gastronómica.",
-    "image": "https://barriquesmarket.com/cdn/shop/products/luzoncoleccion_blanco.png?v=1628876360",
+    "image": "assets/img/botellas/20-luzon-coleccion-blanco.png",
     "age": 10,
     "body": 30,
     "aroma": 72,
     "category": "Blanco",
     "glassPrice": "2,50 €",
-    "bottlePrice": "12,50 €"
+    "bottlePrice": "12,50 €",
+    "longDescription": "Blanco joven mediterráneo, fresco y directo, con una expresión muy frutal y una acidez amable. Perfil de fruta blanca, cítricos y notas tropicales. En boca es fresco, equilibrado y fácil de beber. Su elaboración sin paso por barrica mantiene la fruta y la frescura en primer plano. En mesa resulta especialmente versátil con pescado blanco, pasta, carnes blancas, verduras y platos especiados."
   },
   {
     "slug": "luzon-coleccion-roble",
@@ -773,13 +782,14 @@ const wines = [
     "pairing": "Carnes blancas, embutidos y carnes rojas.",
     "tasting": "Aromas de fruta roja, especias dulces, tostados y café. En boca es suave, fresco y carnoso, con taninos maduros y dulces.",
     "wineryInfo": "Luzón, situada al norte de Murcia y rodeada de montañas, es una de las bodegas representativas de la DO Jumilla y una gran especialista en monastrell.",
-    "image": "assets/img/luzon-coleccion-roble.png",
+    "image": "assets/img/botellas/08-luzon-coleccion-roble.png",
     "age": 34,
     "body": 62,
     "aroma": 56,
     "category": "Tinto",
     "glassPrice": "2,50 €",
-    "bottlePrice": "13,00 €"
+    "bottlePrice": "13,00 €",
+    "longDescription": "Monastrell suave y carnoso, con un toque de madera y una lectura muy fácil y gastronómica. Aromas de fruta roja, especias dulces, tostados y café. En boca es suave, fresco y carnoso, con taninos maduros y dulces. Su elaboración, con 3 meses en barrica de roble, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes blancas, embutidos y carnes rojas."
   },
   {
     "slug": "morca-flor-de-morca",
@@ -797,13 +807,14 @@ const wines = [
     "pairing": "Carnes rojas, guisos, arroces de carne y quesos curados.",
     "tasting": "Notas intensas de cereza madura, mora y especias. En boca tiene cuerpo pleno, textura sedosa, buena frescura y un final largo con eco de vainilla.",
     "wineryInfo": "Bodegas Morca forma parte del dinamismo actual de Campo de Borja y trabaja garnachas con madurez, concentración y una gran expresividad frutal.",
-    "image": "assets/img/morca-flor-de-morca.png",
+    "image": "assets/img/botellas/10-flor-de-morca.png",
     "age": 52,
     "body": 82,
     "aroma": 68,
     "category": "Tinto",
     "glassPrice": "3,00 €",
-    "bottlePrice": "14,90 €"
+    "bottlePrice": "14,90 €",
+    "longDescription": "Un tinto muy expresivo y generoso, directo del universo de la garnacha de Campo de Borja. Notas intensas de cereza madura, mora y especias. En boca tiene cuerpo pleno, textura sedosa, buena frescura y un final largo con eco de vainilla. Su elaboración, con 6 meses en barricas de roble francés, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes rojas, guisos, arroces de carne y quesos curados."
   },
   {
     "slug": "artuke",
@@ -821,13 +832,14 @@ const wines = [
     "pairing": "Tapas, embutidos, cocina informal y carnes ligeras.",
     "tasting": "Aromas de guinda fresca, flores y un guiño goloso. En boca es aterciopelado, muy frutal, ligero de tanino y con un paso amable.",
     "wineryInfo": "Artuke es un proyecto familiar riojano muy centrado en la expresión del viñedo y en elaboraciones que priorizan pureza, frescura y carácter.",
-    "image": "assets/img/artuke.png",
+    "image": "assets/img/botellas/11-artuke.png",
     "age": 16,
     "body": 40,
     "aroma": 78,
     "category": "Tinto",
     "glassPrice": "3,00 €",
-    "bottlePrice": "15,50 €"
+    "bottlePrice": "15,50 €",
+    "longDescription": "Un rioja afrutado y vibrante, de estilo joven y muy disfrutable, elaborado por maceración carbónica. Aromas de guinda fresca, flores y un guiño goloso. En boca es aterciopelado, muy frutal, ligero de tanino y con un paso amable. Su elaboración sin paso por barrica mantiene la fruta y la frescura en primer plano. En mesa resulta especialmente versátil con tapas, embutidos, cocina informal y carnes ligeras."
   },
   {
     "slug": "coto-de-hayas-garnacha-centenaria",
@@ -845,13 +857,14 @@ const wines = [
     "pairing": "Carnes rojas, caza, legumbres, quesos curados y pescado azul.",
     "tasting": "Frambuesa y cereza fresca con notas florales, tostadas y especiadas. Boca amplia, carnosa y persistente.",
     "wineryInfo": "Bodegas Aragonesas trabaja en Campo de Borja, territorio profundamente ligado a la garnacha y a viñedos viejos en las estribaciones del Moncayo.",
-    "image": "https://www.decantalo.de/76049-pdt_540/coto-de-hayas-garnacha-centenaria.jpg",
+    "image": "assets/img/botellas/18-garnacha-centenaria.png",
     "age": 40,
     "body": 72,
     "aroma": 70,
     "category": "Tinto",
     "glassPrice": "3,00 €",
-    "bottlePrice": "15,50 €"
+    "bottlePrice": "15,50 €",
+    "longDescription": "Garnacha de cepas muy viejas con mucha fruta, amplitud y un toque especiado de la crianza. Frambuesa y cereza fresca con notas florales, tostadas y especiadas. Boca amplia, carnosa y persistente. Su elaboración, con 4 meses en barrica de roble francés, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes rojas, caza, legumbres, quesos curados y pescado azul."
   },
   {
     "slug": "semele-crianza",
@@ -869,13 +882,14 @@ const wines = [
     "pairing": "Carnes rojas, asados, embutidos y quesos curados.",
     "tasting": "Notas de frambuesa y fresa con un fondo de frutos negros y especias. En boca entra suave, con taninos integrados, acidez equilibrada y un recuerdo ligeramente ahumado.",
     "wineryInfo": "Montebaco elabora en Ribera del Duero con un estilo franco y accesible, buscando vinos expresivos y bien afinados para mesa.",
-    "image": "assets/img/semele-crianza.png",
+    "image": "assets/img/botellas/15-semele.png",
     "age": 64,
     "body": 66,
     "aroma": 60,
     "category": "Tinto",
     "glassPrice": "3,00 €",
-    "bottlePrice": "15,90 €"
+    "bottlePrice": "15,90 €",
+    "longDescription": "Un crianza de Ribera del Duero con gran relación calidad-precio, muy centrado en la fruta y el equilibrio. Notas de frambuesa y fresa con un fondo de frutos negros y especias. En boca entra suave, con taninos integrados, acidez equilibrada y un recuerdo ligeramente ahumado. Su elaboración, con 12 meses en barrica de roble, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes rojas, asados, embutidos y quesos curados."
   },
   {
     "slug": "la-planta",
@@ -893,13 +907,14 @@ const wines = [
     "pairing": "Embutidos, setas, legumbres, quesos blandos y carnes rojas.",
     "tasting": "Fruta roja, monte bajo y recuerdos minerales con un ligero toque tostado. En boca es carnoso, equilibrado y suave.",
     "wineryInfo": "Arzuaga Navarro elabora en Quintanilla de Onésimo, en plena Ribera del Duero, con una filosofía muy ligada a su finca y al trabajo con Tinto Fino.",
-    "image": "https://www.weinbestellung.ch/media/image/product/19288/md/ribera-del-duero-do-la-planta-2024-075-l-bodegas-arzuaga.png",
+    "image": "assets/img/botellas/16-la-planta.png",
     "age": 46,
     "body": 64,
     "aroma": 64,
     "category": "Tinto",
     "glassPrice": "3,00 €",
-    "bottlePrice": "15,90 €"
+    "bottlePrice": "15,90 €",
+    "longDescription": "Ribera del Duero de perfil joven y accesible, con fruta roja, frescura y una crianza corta bien integrada. Fruta roja, monte bajo y recuerdos minerales con un ligero toque tostado. En boca es carnoso, equilibrado y suave. Su elaboración, con 6 meses en barricas de roble francés y americano, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con embutidos, setas, legumbres, quesos blandos y carnes rojas."
   },
   {
     "slug": "muros-antigos-loureiro",
@@ -917,13 +932,14 @@ const wines = [
     "pairing": "Marisco, pescados, ceviches, ensaladas y aperitivos.",
     "tasting": "Nariz de limón, lima y jazmín. En boca es vibrante, directo y refrescante, con acidez viva y un final limpio.",
     "wineryInfo": "Anselmo Mendes es una de las referencias del vino blanco en Portugal y en esta etiqueta muestra una versión precisa y actual del loureiro de Vinho Verde.",
-    "image": "assets/img/muros-antigos-loureiro.png",
+    "image": "assets/img/botellas/13-muros-antigos-loureiro.png",
     "age": 28,
     "body": 34,
     "aroma": 74,
     "category": "Blanco",
     "glassPrice": null,
-    "bottlePrice": "11,90 €"
+    "bottlePrice": "11,90 €",
+    "longDescription": "Blanco portugués de gran frescura, con tensión, mineralidad y un carácter aromático muy luminoso. Nariz de limón, lima y jazmín. En boca es vibrante, directo y refrescante, con acidez viva y un final limpio. Su elaboración, con 3 meses sobre lías, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con marisco, pescados, ceviches, ensaladas y aperitivos."
   },
   {
     "slug": "vina-zorzal-garnacha-blanca",
@@ -941,13 +957,14 @@ const wines = [
     "pairing": "Ensaladas, marisco, aperitivo, carnes blancas y verduras.",
     "tasting": "Aromas de manzana verde, melocotón y pomelo. En boca es fresca, ligera, sedosa y con un final limpio y muy refrescante.",
     "wineryInfo": "Proyecto familiar navarro centrado en rescatar y poner en valor variedades autóctonas de la DO Navarra, con especial atención al trabajo en viñedo y al respeto por el entorno.",
-    "image": "assets/img/vina-zorzal-garnacha-blanca.png",
+    "image": "assets/img/botellas/01-vina-zorzal-garnacha-blanca.png",
     "age": 42,
     "body": 38,
     "aroma": 76,
     "category": "Blanco",
     "glassPrice": null,
-    "bottlePrice": "13,00 €"
+    "bottlePrice": "13,00 €",
+    "longDescription": "Garnacha blanca muy expresiva y vibrante, con un perfil fresco en el que mandan la fruta blanca, las flores y los cítricos. Aromas de manzana verde, melocotón y pomelo. En boca es fresca, ligera, sedosa y con un final limpio y muy refrescante. Su elaboración, con 9 meses en barricas y hormigón, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con ensaladas, marisco, aperitivo, carnes blancas y verduras."
   },
   {
     "slug": "vina-zorzal-crianza",
@@ -965,13 +982,14 @@ const wines = [
     "pairing": "Embutidos, legumbres, quesos curados, carnes rojas y caza.",
     "tasting": "Fruta madura, romero y tomillo con un toque mentolado. En boca aparece limpia y jugosa, con taninos amables y una textura redonda.",
     "wineryInfo": "La casa Viña Zorzal mantiene un enfoque familiar y un trabajo muy ligado al viñedo y a la recuperación de variedades locales en Navarra.",
-    "image": "assets/img/vina-zorzal-crianza.png",
+    "image": "assets/img/botellas/07-vina-zorzal-crianza.png",
     "age": 82,
     "body": 70,
     "aroma": 60,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "13,50 €"
+    "bottlePrice": "13,50 €",
+    "longDescription": "Garnacha de viñas viejas navarras, jugosa y franca, con hierbas mediterráneas y una boca muy pulida. Fruta madura, romero y tomillo con un toque mentolado. En boca aparece limpia y jugosa, con taninos amables y una textura redonda. Su elaboración, con 24 meses en barricas y hormigón, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con embutidos, legumbres, quesos curados, carnes rojas y caza."
   },
   {
     "slug": "luna-beberide-godello",
@@ -989,13 +1007,14 @@ const wines = [
     "pairing": "Pescados, mariscos, platos especiados, verduras y carnes blancas.",
     "tasting": "Fruta blanca, manzana, pera, hinojo y notas minerales. Boca equilibrada, viva y de final largo.",
     "wineryInfo": "Luna Beberide es una bodega familiar del Bierzo que trabaja especialmente con Mencía y Godello en viñedos de altura y suelos variados.",
-    "image": "https://www.reservaycata.com/cdn/shop/files/LunaBeberideGodello.png?v=1726765779&width=1445",
+    "image": "assets/img/botellas/04-luna-beberide-godello.png",
     "age": 30,
     "body": 48,
     "aroma": 74,
     "category": "Blanco",
     "glassPrice": null,
-    "bottlePrice": "13,90 €"
+    "bottlePrice": "13,90 €",
+    "longDescription": "Godello berciano de viñas viejas, fresco y largo, con buena acidez y un marcado componente mineral. Fruta blanca, manzana, pera, hinojo y notas minerales. Boca equilibrada, viva y de final largo. Su elaboración, con 6 meses sobre lías en acero inoxidable, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con pescados, mariscos, platos especiados, verduras y carnes blancas."
   },
   {
     "slug": "maruxa-godello",
@@ -1013,13 +1032,14 @@ const wines = [
     "pairing": "Aperitivo, pescado azul, quesos blandos y arroces.",
     "tasting": "Manzana verde, cítricos y un punto mineral. Boca fresca, de volumen medio y final ligeramente amargo y muy gastronómico.",
     "wineryInfo": "Virgen del Galir elabora en Valdeorras y trabaja pequeñas parcelas de godello sobre suelos de marcada influencia mineral.",
-    "image": "https://tienda.cvne.com/815-large_default/maruxa-godello-75cl-bottle.jpg",
+    "image": "assets/img/botellas/03-maruxa-godello.png",
     "age": 24,
     "body": 42,
     "aroma": 70,
     "category": "Blanco",
     "glassPrice": null,
-    "bottlePrice": "15,00 €"
+    "bottlePrice": "15,00 €",
+    "longDescription": "Godello fresco, sedoso y muy limpio, con fruta blanca, cítricos y un paso de boca equilibrado. Manzana verde, cítricos y un punto mineral. Boca fresca, de volumen medio y final ligeramente amargo y muy gastronómico. Su elaboración, con 3 meses sobre lías en acero inoxidable, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con aperitivo, pescado azul, quesos blandos y arroces."
   },
   {
     "slug": "ultreia-saint-jacques",
@@ -1037,13 +1057,14 @@ const wines = [
     "pairing": "Embutidos, aves, carnes blancas, setas y platos de cuchara.",
     "tasting": "Nariz de fruta roja fresca, flores y un fondo mineral. En boca es jugoso, directo, elegante, con acidez viva, tanino fino y un final largo.",
     "wineryInfo": "Raúl Pérez es una de las figuras clave del Bierzo contemporáneo; con Ultreia busca vinos honestos, expresivos y profundamente ligados al paisaje berciano.",
-    "image": "assets/img/ultreia-saint-jacques.png",
+    "image": "assets/img/botellas/02-ultreia-saint-jacques.png",
     "age": 58,
     "body": 54,
     "aroma": 72,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "15,90 €"
+    "bottlePrice": "15,90 €",
+    "longDescription": "Una mencía del Bierzo que combina finura, fruta roja y una marcada sensación de frescura y mineralidad. Nariz de fruta roja fresca, flores y un fondo mineral. En boca es jugoso, directo, elegante, con acidez viva, tanino fino y un final largo. Su elaboración, con 14 meses en barrica de roble francés usada, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con embutidos, aves, carnes blancas, setas y platos de cuchara."
   },
   {
     "slug": "borsao-cabriola",
@@ -1061,13 +1082,14 @@ const wines = [
     "pairing": "Embutidos, legumbres, carnes rojas y arroces.",
     "tasting": "Cerezas negras y moras con chocolate, frutos secos y especias. Boca redonda, tanino pulido y final cálido y persistente.",
     "wineryInfo": "Borsao es uno de los proyectos más reconocibles de Campo de Borja y ha construido buena parte de su identidad alrededor de la garnacha.",
-    "image": "https://tienda.bodegasborsao.com/cdn/shop/files/Borsao_Cabriola.png?v=1766144206",
+    "image": "assets/img/botellas/19-borsao-cabriola.png",
     "age": 72,
     "body": 80,
     "aroma": 64,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "15,90 €"
+    "bottlePrice": "15,90 €",
+    "longDescription": "Tinto intenso y equilibrado, con fruta madura, especias y una crianza que redondea el conjunto. Cerezas negras y moras con chocolate, frutos secos y especias. Boca redonda, tanino pulido y final cálido y persistente. Su elaboración, con 12 meses en barricas de roble, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con embutidos, legumbres, carnes rojas y arroces."
   },
   {
     "slug": "feudi-di-san-gregorio-rubrato",
@@ -1085,13 +1107,14 @@ const wines = [
     "pairing": "Carnes rojas, arroces, caza, carnes blancas, risottos y verduras.",
     "tasting": "Moras, grosella negra, arándanos y regaliz. En boca es seco, fresco, equilibrado y de textura ágil.",
     "wineryInfo": "Feudi di San Gregorio es una de las bodegas de referencia de Campania y una gran defensora de las variedades autóctonas del sur de Italia.",
-    "image": "https://www.uncorked.com/on/demandware.static/-/Sites-masterCatalog_terlato/default/Terlato_com_Product_Images/Feudi_di_San_Gregorio/Feudi%20di%20San%20Gregorio%20Rubrato%20Aglianico%20NV%20Bottle%20Shot.png?sh=549&sm=fit",
+    "image": "assets/img/botellas/12-rubrato-aglianico.png",
     "age": 28,
     "body": 56,
     "aroma": 68,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "17,00 €"
+    "bottlePrice": "17,00 €",
+    "longDescription": "Aglianico de Irpinia fresco y jugoso, con carácter frutal y una lectura muy pura de la variedad. Moras, grosella negra, arándanos y regaliz. En boca es seco, fresco, equilibrado y de textura ágil. Su elaboración, con 10 meses en acero inoxidable y 6 meses en botella, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes rojas, arroces, caza, carnes blancas, risottos y verduras."
   },
   {
     "slug": "juan-gil-etiqueta-plata-12-meses",
@@ -1109,13 +1132,14 @@ const wines = [
     "pairing": "Carnes rojas, guisos, arroces intensos y quesos curados.",
     "tasting": "Aromas de violetas, regaliz, tostados finos y mora madura. En boca aparecen fruta negra, tabaco, café y una estructura firme y sabrosa.",
     "wineryInfo": "Juan Gil continúa consolidando su estilo mediterráneo en Jumilla, ahora incorporando prácticas ecológicas en una de sus referencias más conocidas.",
-    "image": "assets/img/juan-gil-etiqueta-plata-12-meses.png",
+    "image": "assets/img/botellas/14-juan-gil-etiqueta-plata.png",
     "age": 60,
     "body": 78,
     "aroma": 66,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "18,50 €"
+    "bottlePrice": "18,50 €",
+    "longDescription": "El Juan Gil de siempre, ahora ecológico y vegano, con un perfil maduro, frutal y muy bien armado. Aromas de violetas, regaliz, tostados finos y mora madura. En boca aparecen fruta negra, tabaco, café y una estructura firme y sabrosa. Su elaboración, con 12 meses en barricas de roble francés, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes rojas, guisos, arroces intensos y quesos curados."
   },
   {
     "slug": "altos-de-luzon",
@@ -1133,13 +1157,14 @@ const wines = [
     "pairing": "Carnes rojas, guisos, arroces intensos, quesos curados y caza.",
     "tasting": "Fruta roja y negra, especias dulces y recuerdos ahumados. En boca es amplio, fresco, con tanino fino y final persistente.",
     "wineryInfo": "Bodegas Luzón trabaja en Jumilla con especial atención a la Monastrell, buscando vinos que combinen madurez mediterránea y frescura.",
-    "image": "https://images.labodegademgc.com/images/2227692-A.png",
+    "image": "assets/img/botellas/01-altos-de-luzon.png",
     "age": 72,
     "body": 80,
     "aroma": 68,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "18,90 €"
+    "bottlePrice": "18,90 €",
+    "longDescription": "Monastrell de Jumilla con profundidad, fruta madura y una crianza que aporta volumen y complejidad. Fruta roja y negra, especias dulces y recuerdos ahumados. En boca es amplio, fresco, con tanino fino y final persistente. Su elaboración, con 12 meses en barricas de roble francés y americano, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes rojas, guisos, arroces intensos, quesos curados y caza."
   },
   {
     "slug": "artuke-pies-negros",
@@ -1157,13 +1182,14 @@ const wines = [
     "pairing": "Embutidos, verduras, carnes rojas y arroces.",
     "tasting": "Frutos negros, cereza madura, ciruela y pimienta blanca. Boca jugosa, equilibrada y de final largo.",
     "wineryInfo": "Artuke es un proyecto familiar de Rioja Alavesa centrado en el viñedo y en una interpretación fresca y precisa de los pueblos y parajes de la zona.",
-    "image": "https://www.decantalo.nl/76616-large_default/artuke-pies-negros.jpg",
+    "image": "assets/img/botellas/17-pies-negros.png",
     "age": 70,
     "body": 68,
     "aroma": 66,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "19,90 €"
+    "bottlePrice": "19,90 €",
+    "longDescription": "Rioja de pueblo con profundidad y frescura, fruta negra, especias y una textura de tanino muy pulida. Frutos negros, cereza madura, ciruela y pimienta blanca. Boca jugosa, equilibrada y de final largo. Su elaboración, con 12 meses en barricas de roble francés y americano, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con embutidos, verduras, carnes rojas y arroces."
   },
   {
     "slug": "borsao-tres-picos",
@@ -1181,13 +1207,14 @@ const wines = [
     "pairing": "Carnes rojas, caza, aperitivo, legumbres y quesos curados.",
     "tasting": "Cereza, fresa, mora y ciruela con vainilla y ligeros tostados. Boca estructurada, con tanino dulce y fino.",
     "wineryInfo": "Borsao es una referencia de Campo de Borja y uno de los grandes embajadores de la garnacha aragonesa.",
-    "image": "https://www.marketviewliquor.com/mm5/graphics/00000001/BORSAOTRESPICOSGARNACHA.jpg",
+    "image": "assets/img/botellas/07-borsao-tres-picos.png",
     "age": 58,
     "body": 78,
     "aroma": 68,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "21,00 €"
+    "bottlePrice": "21,00 €",
+    "longDescription": "Garnacha aragonesa intensa y jugosa, con fruta madura, especias y una estructura amplia y sedosa. Cereza, fresa, mora y ciruela con vainilla y ligeros tostados. Boca estructurada, con tanino dulce y fino. Su elaboración, con crianza en barrica de roble francés, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes rojas, caza, aperitivo, legumbres y quesos curados."
   },
   {
     "slug": "frontonio-microcosmico-macabeo",
@@ -1205,13 +1232,14 @@ const wines = [
     "pairing": "Pescados, mariscos, arroces, verduras y platos de cocina mediterránea.",
     "tasting": "Lima, flores blancas, hinojo y fondo mineral. En boca es fresco, salino, estructurado y persistente.",
     "wineryInfo": "Bodegas Frontonio trabaja viñedos de Valdejalón con una filosofía artesanal y un marcado interés por variedades tradicionales y suelos de altura.",
-    "image": "https://vinatero.de/media/28/80/6a/1678538845/MicrocosmicoMacabeo-Bot2020_web.png",
+    "image": "assets/img/botellas/02-microcosmico-macabeo.png",
     "age": 38,
     "body": 50,
     "aroma": 72,
     "category": "Blanco",
     "glassPrice": null,
-    "bottlePrice": "22,00 €"
+    "bottlePrice": "22,00 €",
+    "longDescription": "Macabeo de gran energía y frescura, con textura salina, carácter mineral y una elaboración muy precisa. Lima, flores blancas, hinojo y fondo mineral. En boca es fresco, salino, estructurado y persistente. Su elaboración, con crianza sobre lías en cemento; una pequeña parte en roble usado, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con pescados, mariscos, arroces, verduras y platos de cocina mediterránea."
   },
   {
     "slug": "ultreia-godello",
@@ -1229,13 +1257,14 @@ const wines = [
     "pairing": "Arroces, sushi, risottos y pasta.",
     "tasting": "Manzana verde, pera y melocotón con notas minerales y un recuerdo sutil de vainilla. Boca fresca, sedosa y equilibrada.",
     "wineryInfo": "Raúl Pérez es una figura central del Bierzo contemporáneo y trabaja microparcelas y variedades locales con una filosofía muy poco intervencionista.",
-    "image": "https://vinotecacollado.com/23190-extralarge_default/ultreia-godello-2024.jpg",
+    "image": "assets/img/botellas/05-ultreia-godello.png",
     "age": 72,
     "body": 60,
     "aroma": 68,
     "category": "Blanco",
     "glassPrice": null,
-    "bottlePrice": "22,50 €"
+    "bottlePrice": "22,50 €",
+    "longDescription": "Godello de autor, envolvente y estructurado, con frescura, fruta blanca y una crianza que aporta textura. Manzana verde, pera y melocotón con notas minerales y un recuerdo sutil de vainilla. Boca fresca, sedosa y equilibrada. Su elaboración, con 12 meses en fudres, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con arroces, sushi, risottos y pasta."
   },
   {
     "slug": "finca-moncloa",
@@ -1253,13 +1282,14 @@ const wines = [
     "pairing": "Embutidos, quesos curados y carnes rojas.",
     "tasting": "Grosella negra, mora y ciruela con pimienta, clavo, vainilla y notas balsámicas. Final largo y persistente.",
     "wineryInfo": "Finca Moncloa, proyecto de González Byass en Arcos de la Frontera, recupera y pone en valor la Tintilla de Rota junto a variedades internacionales.",
-    "image": "https://www.decantalo.com/lt/71426-large_default/finca-moncloa.jpg",
+    "image": "assets/img/botellas/06-finca-moncloa.png",
     "age": 76,
     "body": 82,
     "aroma": 70,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "21,90 €"
+    "bottlePrice": "21,90 €",
+    "longDescription": "Tinto gaditano potente pero sedoso, con fruta madura, especias, balsámicos y una crianza bien integrada. Grosella negra, mora y ciruela con pimienta, clavo, vainilla y notas balsámicas. Final largo y persistente. Su elaboración, con 12 meses en barricas de roble francés y americano, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con embutidos, quesos curados y carnes rojas."
   },
   {
     "slug": "antidoto",
@@ -1277,13 +1307,14 @@ const wines = [
     "pairing": "Embutidos, carnes a la brasa, arroces y quesos.",
     "tasting": "Frutas rojas, especias y un sutil recuerdo ahumado. En boca tiene buena acidez, taninos suaves y una sensación fluida y fresca.",
     "wineryInfo": "Bodegas Antídoto trabaja viñedos de altura en la parte soriana de la Ribera del Duero, buscando pureza de fruta y precisión en cada añada.",
-    "image": "assets/img/antidoto.png",
+    "image": "assets/img/botellas/05-antidoto.png",
     "age": 48,
     "body": 58,
     "aroma": 62,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "23,00 €"
+    "bottlePrice": "23,00 €",
+    "longDescription": "Un Ribera del Duero pensado para beber y disfrutar: fruta nítida, crianza corta y un estilo equilibrado y muy amable. Frutas rojas, especias y un sutil recuerdo ahumado. En boca tiene buena acidez, taninos suaves y una sensación fluida y fresca. Su elaboración, con 5 meses en barrica de roble, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con embutidos, carnes a la brasa, arroces y quesos."
   },
   {
     "slug": "pesquera-crianza",
@@ -1301,13 +1332,14 @@ const wines = [
     "pairing": "Cordero, asados, carnes rojas y quesos curados.",
     "tasting": "Nariz de fresas maduras, cacao, regaliz, vainilla y frutos negros. En boca resulta fresco, sedoso y persistente, con madera muy bien acompasada.",
     "wineryInfo": "Pesquera es una casa histórica de la Ribera del Duero y sigue representando un estilo reconocible, firme y muy ligado al carácter de la tempranillo.",
-    "image": "assets/img/pesquera-crianza.png",
+    "image": "assets/img/botellas/06-tinto-pesquera-crianza.png",
     "age": 76,
     "body": 80,
     "aroma": 64,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "23,50 €"
+    "bottlePrice": "23,50 €",
+    "longDescription": "Un clásico de Ribera del Duero que combina fruta negra, especias dulces y una crianza bien integrada. Nariz de fresas maduras, cacao, regaliz, vainilla y frutos negros. En boca resulta fresco, sedoso y persistente, con madera muy bien acompasada. Su elaboración, con 18 meses en barricas de roble francés y americano, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con cordero, asados, carnes rojas y quesos curados."
   },
   {
     "slug": "payoya-negra",
@@ -1325,13 +1357,14 @@ const wines = [
     "pairing": "Cordero, guisos, quesos curados y carnes de caza.",
     "tasting": "Color picota con reflejos violáceos. En nariz recuerda a cerezas, frambuesas, especias dulces y un toque herbal. En boca es jugoso, envolvente y elegante.",
     "wineryInfo": "Finca La Melonera trabaja en la recuperación del patrimonio vitícola andaluz y en la elaboración de vinos con identidad de la Serranía de Ronda.",
-    "image": "assets/img/payoya-negra.png",
+    "image": "assets/img/botellas/04-payoya-negra.png",
     "age": 74,
     "body": 78,
     "aroma": 70,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "28,50 €"
+    "bottlePrice": "28,50 €",
+    "longDescription": "Tinto andaluz con personalidad propia, muy expresivo, que une fruta roja, especias y un marcado carácter de montaña. Color picota con reflejos violáceos. En nariz recuerda a cerezas, frambuesas, especias dulces y un toque herbal. En boca es jugoso, envolvente y elegante. Su elaboración, con 12 meses en barrica de roble francés de Allier, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con cordero, guisos, quesos curados y carnes de caza."
   },
   {
     "slug": "juan-gil-etiqueta-azul",
@@ -1349,13 +1382,14 @@ const wines = [
     "pairing": "Carnes rojas, caza, estofados y quesos curados.",
     "tasting": "Aromas de frutos rojos maduros, vainilla, canela y tostados. En boca se muestra sedoso, amplio y largo, con cacao, especias y taninos nobles.",
     "wineryInfo": "Juan Gil es una de las bodegas de referencia de Jumilla y ha convertido la monastrell mediterránea en una de sus grandes señas de identidad.",
-    "image": "assets/img/juan-gil-etiqueta-azul.png",
+    "image": "assets/img/botellas/03-juan-gil-etiqueta-azul.png",
     "age": 80,
     "body": 86,
     "aroma": 68,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "30,90 €"
+    "bottlePrice": "30,90 €",
+    "longDescription": "Un Jumilla maduro, concentrado y especiado, con mucha fruta y una crianza que aporta profundidad sin perder equilibrio. Aromas de frutos rojos maduros, vainilla, canela y tostados. En boca se muestra sedoso, amplio y largo, con cacao, especias y taninos nobles. Su elaboración, con 18 meses en barricas de roble francés y americano, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con carnes rojas, caza, estofados y quesos curados."
   },
   {
     "slug": "matarromera-crianza",
@@ -1373,13 +1407,14 @@ const wines = [
     "pairing": "Caza, aperitivo, quesos curados y carnes rojas.",
     "tasting": "Cerezas y moras maduras, vainilla y especias. En boca es elegante, equilibrado y persistente, con taninos suaves y sensación de plenitud.",
     "wineryInfo": "Matarromera es una de las firmas más reconocidas de la Ribera del Duero y destaca por su trabajo riguroso en la elaboración de tintos de estilo clásico y pulido.",
-    "image": "assets/img/matarromera-crianza.png",
+    "image": "assets/img/botellas/09-matarromera-crianza.png",
     "age": 72,
     "body": 78,
     "aroma": 62,
     "category": "Tinto",
     "glassPrice": null,
-    "bottlePrice": "30,90 €"
+    "bottlePrice": "30,90 €",
+    "longDescription": "Crianza refinado y concentrado, con un perfil clásico de la Ribera del Duero y gran equilibrio. Cerezas y moras maduras, vainilla y especias. En boca es elegante, equilibrado y persistente, con taninos suaves y sensación de plenitud. Su elaboración, con 14 meses en barricas de roble francés y americano, aporta matices y estructura sin perder la identidad de la fruta. En mesa resulta especialmente versátil con caza, aperitivo, quesos curados y carnes rojas."
   }
 ];
 
@@ -1426,7 +1461,7 @@ function detailPriceHtml(w) {
 
 function renderCards() {
   carousel.innerHTML = filteredWines.map((w, i) => `
-    <article class="wine-card ${i===selected ? 'selected' : ''}" data-index="${i}">
+    <article class="wine-card ${i===selected ? 'selected' : (Math.abs(i-selected)===1 ? 'nearby' : '')}" data-index="${i}">
       <div class="card-topline">
         <span class="category-tag">${w.category}</span>
         <span class="price-tag">${priceHtml(w, true)}</span>
@@ -1473,6 +1508,7 @@ function renderDetail() {
   document.getElementById("detailPairing").innerHTML = `<strong>Maridaje:</strong> ${w.pairing}`;
   document.getElementById("detailTasting").textContent = w.tasting;
   document.getElementById("detailWineryInfo").textContent = w.wineryInfo;
+  document.getElementById("detailLongDescription").textContent = w.longDescription;
   document.getElementById("detailBottle").src = w.image;
   document.getElementById("detailBottle").alt = `Botella de ${w.name}`;
 
@@ -1519,7 +1555,9 @@ function detectCentered() {
     selected = bestIndex;
     renderDetail();
     cards.forEach(card => {
-      card.classList.toggle("selected", Number(card.dataset.index) === selected);
+      const cardIndex = Number(card.dataset.index);
+      card.classList.toggle("selected", cardIndex === selected);
+      card.classList.toggle("nearby", Math.abs(cardIndex - selected) === 1);
     });
     dots.querySelectorAll(".dot").forEach((dot, i) => {
       dot.classList.toggle("active", i === selected);
@@ -1532,13 +1570,6 @@ carousel.addEventListener("scroll", () => {
   scrollTimer = setTimeout(detectCentered, 80);
 }, { passive:true });
 
-document.getElementById("prevBtn").addEventListener("click", () => {
-  selectWine(Math.max(0, selected - 1), true);
-});
-
-document.getElementById("nextBtn").addEventListener("click", () => {
-  selectWine(Math.min(filteredWines.length - 1, selected + 1), true);
-});
 
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => applyFilter(btn.dataset.filter));
